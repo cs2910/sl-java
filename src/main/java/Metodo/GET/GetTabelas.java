@@ -16,19 +16,19 @@ import java.sql.SQLException;
 public class GetTabelas {
     public static void executeGet(String tabela, String apibanco) throws SQLException {
         Connection con = new Conexao().conexaoBanco();
-        ResultSet pagamento = con. createStatement().executeQuery("select * from "+tabela+" where id_cloud is null and protocolo <> 'null'");
+        ResultSet pagamento = con. createStatement().executeQuery("select * from "+tabela+" where idcloud is null and protocolo is not null and protocolo <> ''");
         // Verifica os Protocolos;
         while (pagamento.next()){
             String protocolo = pagamento.getString("protocolo");
             System.out.println(protocolo);
             String itemValorGet = "";
             try {
-                String  token = "4f6a2f1a-8cfe-45b4-90e4-8909010bec68";
+                String  token = "c99b5c6c-16be-4d0c-9fed-8af564b13805";
                 // Verifar até ter sucesso
                 while (!itemValorGet.equals("SUCESSO") ) {
                     // URL da API que você deseja acessar
                     String apiUrl = "https://tributos.betha.cloud/service-layer-tributos/api/"+apibanco+"/" + protocolo;
-                    System.out.println("Api de consulta de lote: " + apiUrl);
+                    //System.out.println("Api de consulta de lote: " + apiUrl);
                     // Criação da URL
                     URL url = new URL(apiUrl);
 
@@ -64,19 +64,19 @@ public class GetTabelas {
                             long idCloud = idGerado.getLong("id");
                             //itemValorGet = "SUCESSO" ;
                             System.out.println(retornoObject.getString("idGerado"));
-                           /* String idCloud = retornoObject.getString("idGerado");
-                            idCloud = idCloud.substring(6,14);
+                           // String idCloud = retornoObject.getString("idGerado");
+                            /*idCloud = idCloud.substring(6,14);
                             idCloud = idCloud.replace("}","");*/
                             //  System.out.println(valor);
                             System.out.println("ola " + idCloud);
 
                             if (itemValorGet.equals("SUCESSO")){
                                 Connection novo = new Conexao().conexaoBanco();
-                                String comando = "update "+tabela+" set id_cloud = "+idCloud+" where protocolo = '"+protocolo+"';";
+                                String comando = "update "+tabela+" set idcloud = "+idCloud+" where protocolo = '"+protocolo+"';";
                                 novo.createStatement().executeUpdate(comando);
                                 novo.close();
                             }
-                            System.out.println("Status: " + itemValorGet);
+                            //System.out.println("Status: " + itemValorGet);
                         }
                         // Exibe a resposta
                         System.out.println(response.toString());

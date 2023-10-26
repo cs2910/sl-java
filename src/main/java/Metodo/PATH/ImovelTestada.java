@@ -1,46 +1,43 @@
-package Metodo.DEL;
+package Metodo.PATH;
 
 import Banco.Conexao;
 import org.json.JSONObject;
 
+import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpHeaders;
+import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import java.net.URI;
-
-import java.net.http.HttpRequest;
-
-
-
-public class DeletaPessEndereco {
+public class ImovelTestada {
     public static void main(String[] args) throws SQLException {
         Connection con = new Conexao().conexaoBanco();
-        ResultSet divida = con.createStatement().executeQuery("select idCloud, '{\"idIntegracao\": \"INTEGRACAO1\",\"pessoasEnderecos\": {\"idGerado\": {\"id\": '||idcloud ||'}}}'\n" +
-                "as idJson from pessoasenderecos where protocolo is null");
+        ResultSet divida = con.createStatement().executeQuery("select \n" +
+                "idcloud, '{\"idIntegracao\": \"INTEGRACAO1\",\"imoveisTestadas\": {\"idGerado\":{\"id\": '||idCloud||'\n" +
+                " },\"idFace\": '||idface ||',\"idLogradouro\":'||idlogradouro ||',\"idSecao\": '||idsecao ||'}}'\n" +
+                " as nome from imoveltestada where  protocolo is null");
         while (divida.next()){
-            String idcloud = divida.getString("idcloud");
-            String jsonBody = divida.getString("idJson");
             String itemValor = null;
-            System.out.println(idcloud);
-            String urlPost = "https://tributos.betha.cloud/service-layer-tributos/api/pessoasEnderecos/";
+            String jsonBody = divida.getString("nome");
+            String div = divida.getString("idCloud");
+            String urlPost = "https://tributos.betha.cloud/service-layer-tributos/api/imoveisTestadas/";
 
-            System.out.println(jsonBody);
+           System.out.println(jsonBody);
             // ConectarBanco.executePost(urlPost,jsonBody,caminho,tabela);
             String  token = "4f6a2f1a-8cfe-45b4-90e4-8909010bec68";
             System.out.println("Json: " + jsonBody);
             // Criar cliente HttpClient
             HttpClient client = HttpClient.newHttpClient();
 
-            // Criar requisição delete com o corpo em JSON
+            // Criar requisição POST com o corpo em JSON
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(urlPost))
-                    .header("Authorization", "Bearer 4f6a2f1a-8cfe-45b4-90e4-8909010bec68")
+                    .header("Authorization", "Bearer " + token )
                     .header("Content-Type", "application/json")
-                    .method("DELETE", HttpRequest.BodyPublishers.ofString(jsonBody))
+                    .PUT(HttpRequest.BodyPublishers.ofString(jsonBody))
                     .build();
             try {
                 // Enviar requisição
@@ -64,9 +61,7 @@ public class DeletaPessEndereco {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            con.createStatement().executeUpdate("update pessoasenderecos set protocolo = '"+itemValor+"' where idcloud = "+idcloud);
+            con.createStatement().executeUpdate("update imoveltestada set protocolo = '"+itemValor+"' where idCloud = "+div);
         }
     }
-
-
 }

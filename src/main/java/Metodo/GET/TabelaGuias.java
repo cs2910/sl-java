@@ -5,7 +5,7 @@ public class TabelaGuias {
     public static void main(String[] args) {
         // Tabela no postgres e API
         try {
-            GetTabelas.executeGet("guias", "guias");
+            GetTabelas.executeGet("guiasjf", "guias");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
